@@ -14,4 +14,7 @@ the ground truth answer exactly.
 tives) / (true positives + false positives) and recall = true positives / (false
 negatives + true positives). F1 score = (2×prediction×recall) / (precision + recall).
 
+To execute the evaluation, the below command can be used,
+python <filpath to main.py> --eval
+
 #### To calculate scores mentioned as above, you can call eval_reader(model, questions, answers, display) and set display = True if you want the result printed 
