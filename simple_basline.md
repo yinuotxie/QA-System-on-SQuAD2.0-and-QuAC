@@ -8,6 +8,6 @@ advanced retriever is needed and the fine-tuning of the Bert model on SQuAD
 is necessary.
 
 To execute the simple baseline model, the below command can be used,
-python filepath --baseline False
+python <filpath to main.py> --baseline True
 
 (default argument picks up the strong baseline model)
