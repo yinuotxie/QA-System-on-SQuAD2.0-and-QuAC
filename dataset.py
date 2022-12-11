@@ -5,12 +5,11 @@ import urllib.request
 import json 
 
 
-def load_dataset(url):
+def load_dataset(file):
     """
     Load the dataset from the url. Return context, queries, and answers.
     """
-    with urllib.request.urlopen(url) as url:
-        data_dict = json.load(url)
+    data_dict = json.load(open(file))
 
     texts = []
     queries = []
