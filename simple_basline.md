@@ -7,4 +7,7 @@ poor score with the simple baseline which only reinforces the intuition that mor
 advanced retriever is needed and the fine-tuning of the Bert model on SQuAD
 is necessary.
 
-#### You can find code that implements the above in the simple_baseline.py
+To execute the simple baseline model, the below command can be used,
+python filepath --baseline False
+
+(default argument picks up the strong baseline model)
