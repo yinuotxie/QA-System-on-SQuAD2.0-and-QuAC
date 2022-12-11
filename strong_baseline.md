@@ -14,4 +14,4 @@ states that can be used as contextual representation of input query passage
 pair. From the available pre-trained BERT models, we have used BERT-Large, Uncased (Whole Word Masking) with 24-layer, 1024-hidden, 16-heads and 340M
 parameters, for this task.
 
-#### You can find code that implements the above in the strong_baseline.py
+The main function executes the model with the strong baseline implementation by default.
