@@ -73,11 +73,11 @@ if __name__ == "__main__":
                           "stop talking about me"]
 
         for question, answer in zip(sample_questions, sample_answers):
+            print(f"Question: {question}")
             prediction = qa.question_answer(question, display=True)
             em_score = exact_match(prediction, answer)
             f1_score = compute_f1(prediction, answer)
 
-            print(f"Question: {question}")
             print(f'Prediction: {prediction}')
             print(f'True Answer: {answer}\n')
             print(f'Exact match: {em_score}')
