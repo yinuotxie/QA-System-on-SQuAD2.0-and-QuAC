@@ -12,16 +12,20 @@ def _parse_args():
     parser = argparse.ArgumentParser(description='QpenDomainQA System')
 
     # General system running and configuration options
-    parser.add_argument('--baseline', type=bool, default=False, help='run the simple baseline')
-    parser.add_argument('--train_path', type=str, default='data/train-v2.0.json',
+    parser.add_argument('--train_path', type=str,
+                        default='https://rajpurkar.github.io/SQuAD-explorer/dataset/train-v2.0.json',
                         help='path to train data')
-    parser.add_argument('--dev_path', type=str, default='data/dev-v2.0.json', help='path to dev data')
+    parser.add_argument('--dev_path', type=str,
+                        default='https://rajpurkar.github.io/SQuAD-explorer/dataset/dev-v2.0.json',
+                        help='path to dev data')
     parser.add_argument('--tokenizer_path', type=str, default='bert-large-uncased-whole-word-masking-finetuned-squad',
                         help='path to tokenizer')
-    parser.add_argument('--print_examples', type=bool, default=True, help="Print examples")
-    parser.add_argument('--eval', type=bool, default=False, help='whether to eval the pipeline.')
 
-    args = parser.parse_args("")
+    parser.add_argument('--baseline', default=False, action='store_true', help='run the simple baseline')
+    parser.add_argument('--print_examples', default='True', action='store_false', help="Print examples")
+    parser.add_argument('--eval', default=False, action='store_true', help='whether to eval the pipeline.')
+
+    args = parser.parse_args()
     return args
 
 
@@ -51,8 +55,11 @@ if __name__ == "__main__":
 
     if args.eval:
         # evalute the qa system
-        print("Evaluating\n")
+        print("Evaluating")
         em, f1_score = eval_reader(qa, dev_questions, dev_answers, display=False)
+
+        print(f'Exact match: {em}')
+        print(f'F1 score: {f1_score}\n')
 
     if args.print_examples:
         sample_questions = ["When did Angelos born?",
@@ -65,4 +72,13 @@ if __name__ == "__main__":
                           "half Cypriot and half Greek", "Artificial Intelligence",
                           "stop talking about me"]
 
-        eval_reader(qa, sample_questions, sample_answers, display=True)
+        for question, answer in zip(sample_questions, sample_answers):
+            prediction = qa.question_answer(question, display=True)
+            em_score = exact_match(prediction, answer)
+            f1_score = compute_f1(prediction, answer)
+
+            print(f"Question: {question}")
+            print(f'Prediction: {prediction}')
+            print(f'True Answer: {answer}\n')
+            print(f'Exact match: {em_score}')
+            print(f'F1 score: {f1_score}\n')

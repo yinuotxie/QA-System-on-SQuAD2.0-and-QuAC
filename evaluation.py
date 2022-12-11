@@ -67,24 +67,28 @@ def eval_reader(model, questions, answers, display=False):
     total_em = 0
     total_f1 = 0
     size = len(questions)
-    batch = size / 20
+    batch = size // 10
+
     for i, (question, answer) in enumerate(zip(questions, answers)):
         prediction = model.question_answer(question, display)
-        em_score = exact_match(prediction, answer)
-        f1_score = compute_f1(prediction, answer)
+        em_score = False
+        f1_score = float('-inf')
+        if len(answer) == 0:
+            true_answer = ''
+            em_score = em_score or exact_match(prediction, true_answer)
+            f1_score = max(f1_score, compute_f1(prediction, true_answer))
+        else:
+            for ans in answer:
+                true_answer = ans['text']
+                em_score = em_score or exact_match(prediction, true_answer)
+                f1_score = max(f1_score, compute_f1(prediction, true_answer))
+
         total_f1 += f1_score
         if em_score:
             total_em += 1
 
-        if display:
-            print(f"Question: {question}")
-            print(f'Prediction: {prediction}')
-            print(f'True Answer: {answer}\n')
-            print(f'Exact match: {em_score}')
-            print(f'F1 score: {f1_score}\n')
-        else:
-            if (i + 1) % batch == 0:
-                print(f"Exact Match Rate For {(i + 1) / size}  Questions: {total_em / (i + 1)}")
-                print(f"F1-score for first {(i + 1) / size}  Questions: {total_f1 / (i + 1)}\n")
+        if (i + 1) % batch == 0:
+            print(f"Exact Match Rate for {(i + 1)}/{size}  Questions: {total_em / (i + 1)}")
+            print(f"F1-score for {(i + 1)}/{size}  Questions: {total_f1 / (i + 1)}\n")
 
     return total_em / size, total_f1 / size

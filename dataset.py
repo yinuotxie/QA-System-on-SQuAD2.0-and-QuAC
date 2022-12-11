@@ -1,15 +1,16 @@
 """
 Load dataset from the json file
 """
+import json
 import urllib.request
-import json 
 
 
-def load_dataset(file):
+def load_dataset(url):
     """
-    Load the dataset from the url. Return context, queries, and answers.
+    Load the dataset from the url.
     """
-    data_dict = json.load(open(file))
+    with urllib.request.urlopen(url) as url:
+        data_dict = json.load(url)
 
     texts = []
     queries = []
@@ -18,16 +19,15 @@ def load_dataset(file):
     # Search for each passage, its question and its answer
     for group in data_dict['data']:
         for passage in group['paragraphs']:
-            context = passage['context']
             for qa in passage['qas']:
-                question = qa['question']
+                texts.append(passage['context'])
+                queries.append(qa['question'])
+                results = []
                 for answer in qa['answers']:
-                    # get the answer end idx 
+                    # get the answer end idx
                     answer['answer_end'] = answer['answer_start'] + len(answer['text'])
+                    results.append(answer)
 
-                    # Store every passage, query and its answer to the lists
-                    texts.append(context)
-                    queries.append(question)
-                    answers.append(answer)
+                answers.append(results)
 
     return texts, queries, answers
