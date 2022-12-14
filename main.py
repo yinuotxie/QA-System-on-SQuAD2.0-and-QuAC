@@ -3,6 +3,7 @@ from qa import *
 from evaluation import *
 from dataset import *
 from transformers import BertForQuestionAnswering, BertTokenizer
+from transformers import AutoTokenizer, AutoModelForQuestionAnswering, pipeline
 from sentence_transformers import SentenceTransformer, CrossEncoder
 import argparse
 
@@ -38,15 +39,20 @@ if __name__ == "__main__":
 
     # load the models
     print("Loading models")
-    tokenizer = BertTokenizer.from_pretrained(args.tokenizer_path)
+    # tokenizer = BertTokenizer.from_pretrained(args.tokenizer_path)
+    tokenizer = AutoTokenizer.from_pretrained("deepset/roberta-large-squad2")
     if args.baseline:
+        print("Using Baseline")
         reader = BertForQuestionAnswering.from_pretrained('bert-base-uncased')
         retriever = LexicalSearch()
     else:
-        bi_encoder = SentenceTransformer('multi-qa-MiniLM-L6-cos-v1')
+        print("Using Strong Model")
+        # bi_encoder = SentenceTransformer('multi-qa-MiniLM-L6-cos-v1')
+        bi_encoder = SentenceTransformer('pinecone/bert-retriever-squad2')
         bi_encoder.max_seq_length = 512
         cross_encoder = CrossEncoder('cross-encoder/ms-marco-MiniLM-L-6-v2')
-        reader = BertForQuestionAnswering.from_pretrained('bert-base-uncased')
+        # reader = BertForQuestionAnswering.from_pretrained('deepset/roberta-large-squad2')
+        reader = AutoModelForQuestionAnswering.from_pretrained("deepset/roberta-large-squad2")
         retriever = PassageRanking(bi_encoder, cross_encoder)
     retriever.fit(train_passages + dev_passages)
     print("========================\n")

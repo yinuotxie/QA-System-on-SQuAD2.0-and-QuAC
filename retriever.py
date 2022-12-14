@@ -90,7 +90,7 @@ class PassageRanking(object):
         for idx in range(len(cross_scores)):
             hits[idx]['cross-score'] = cross_scores[idx]
 
-        hits = sorted(hits, key=lambda x: x['score'], reverse=True)
+        hits = sorted(hits, key=lambda x: x['cross-score'], reverse=True)
 
         results = []
         for i in range(top_k):
