@@ -63,32 +63,37 @@ def compute_f1(prediction, truth):
     return round(2 * (prec * rec) / (prec + rec), 2)
 
 
-def eval_reader(model, questions, answers, display=False):
+def eval_model(model, questions, contexts, answers, apply_retriever=False, display=False):
     total_em = 0
     total_f1 = 0
     size = len(questions)
-    batch = size // 10
+    batch = size // 20
+    total_ans = 0
 
-    for i, (question, answer) in enumerate(zip(questions, answers)):
-        prediction = model.question_answer(question, display)
-        em_score = False
-        f1_score = float('-inf')
-        if len(answer) == 0:
-            true_answer = ''
-            em_score = em_score or exact_match(prediction, true_answer)
-            f1_score = max(f1_score, compute_f1(prediction, true_answer))
+    for i, (question, context, answer) in enumerate(zip(questions, contexts, answers)):
+        if apply_retriever:
+            prediction = model.question_answer(question, display=display)
         else:
-            for ans in answer:
-                true_answer = ans['text']
-                em_score = em_score or exact_match(prediction, true_answer)
-                f1_score = max(f1_score, compute_f1(prediction, true_answer))
+            prediction = model.question_answer(question, context, display=display)
+
+        em_score = False
+        f1_score = 0
+
+        if len(answer) != 0:
+            total_ans += 1
+            em_score = max([exact_match(prediction, true_answer['text']) for true_answer in answer])
+            f1_score = max([compute_f1(prediction, true_answer['text']) for true_answer in answer])
 
         total_f1 += f1_score
         if em_score:
             total_em += 1
 
         if (i + 1) % batch == 0:
-            print(f"Exact Match Rate for {(i + 1)}/{size}  Questions: {total_em / (i + 1)}")
-            print(f"F1-score for {(i + 1)}/{size}  Questions: {total_f1 / (i + 1)}\n")
+            print('Number of Answerable Questions:', total_ans)
+            print(f"Exact Match Rate for {(i + 1)}/{size} Questions: {total_em / total_ans}")
+            print(f"F1-score for {(i + 1)}/{size} Questions: {total_f1 / total_ans}\n")
 
-    return total_em / size, total_f1 / size
+    print('Total Number of Answerable Questions:', total_ans)
+    print(f"Exact Match Rate: {round(total_em / total_ans, 3)}")
+    print(f"F1-score: {round(total_f1 / total_ans, 3)}\n")
+    return total_em / total_ans, total_f1 / total_ans

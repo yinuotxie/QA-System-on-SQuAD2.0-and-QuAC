@@ -1,11 +1,38 @@
-# Open Domain Question Answering System
+# Question Answering on SQuAD2.0 and SQuAD. 
 ## Introduction
-<p align="justify">
-Our project revolves around open domain question answering where we begin with baselines and then explore pre-trained 
-models that find answers to a given question. The system is composed of two parts: Document Retriever and Document Reader. 
-Document retriever will retrieve the top k relevant passages to the given question. Document reader will then generate 
-an answer based on these passages. The answers to the questions are derived as a subset of the comprehension. We are using 
-the Stanford Question Answering Dataset(SQuAD2.0) which is one of the most worked upon large-scale, labeled datasets for 
-the project. Here, we have started with a simple retriever baseline where we use lexical search to find the relevant 
-passages and a simple reader where we use a Bert model that is trained on SQuAD2.0 dataset.
-</p>
+Please see the report for the details of the project.
+## Usage
+Download the required package.
+```
+pip install transformers
+pip install -U sentence-transformers rank_bm25
+```
+Clone the code from the github. 
+```
+git clone https://github.com/yinuotxie/QA-System-on-SQuAD2.0-and-QuAC.git
+cd QA-System-on-SQuAD2.0-and-QuAC
+```
+Run the main file to see examples.
+```
+python3 main.py 
+```
+Run the main file to generate evuations.
+```
+python3 main.py --eval
+```
+Other userful arguments.
+```
+ptional arguments:
+  -h, --help            show this help message and exit
+  --dataset {squad,quac}
+                        which dataset to use to eval
+  --model_name MODEL_NAME
+                        model name
+  --retriever {lexical,semantic}
+                        methods of retriever
+  --apply_retriever     whether to use retriever
+  --baseline            run the simple baseline
+  --print_examples      Print examples
+  --eval                whether to eval the pipeline.
+```
+
