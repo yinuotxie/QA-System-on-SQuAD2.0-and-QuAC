@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/OpenDomainQA.iml" filepath="$PROJECT_DIR$/.idea/OpenDomainQA.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/QA-System-on-SQuAD2.0-and-QuAC.iml" filepath="$PROJECT_DIR$/.idea/QA-System-on-SQuAD2.0-and-QuAC.iml" />
     </modules>
   </component>
 </project>
